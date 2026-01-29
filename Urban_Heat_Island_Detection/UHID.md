@@ -1,13 +1,70 @@
-# Urban Heat Island Detection & Cooling Features Mapping  – Pune, India
+# Urban Heat Island Detection & Cooling Infrastructure Assessment  
 
-## Project Overview
-This project aims to detect and analyze Urban Heat Islands (UHIs) in Pune City using Landsat 9 thermal satellite data and OpenStreetMap (OSM) features. The goal is to identify UHI hotspots and assess the effectiveness of existing cooling infrastructure (green spaces and water bodies) during May 2025, a peak summer month in India.
+## Project Summary  
 
-The entire workflow is implemented using open-source geospatial Python libraries and visualized through a reproducible pipeline.
+Urban Heat Islands (UHI) significantly impact urban livability, energy consumption, and public health.  
+This project implements an **end-to-end automated geospatial pipeline** to detect UHI hotspots and evaluate cooling infrastructure using satellite-derived Land Surface Temperature (LST) and OpenStreetMap spatial features.
 
 ---
 
-## Project Structure
+## Technical Objectives  
+
+- Automate LST extraction and preprocessing from Landsat 9  
+- Perform spatial zonal statistics on cooling infrastructure  
+- Classify urban heat zones using unsupervised machine learning (K-Means)  
+- Produce reproducible geospatial outputs for GIS workflows  
+
+---
+
+## Data Sources  
+
+| Dataset | Source |
+|----------|--------|
+| Land Surface Temperature (LST) | Landsat 9 via Google Earth Engine |
+| Green spaces & Water bodies | OpenStreetMap (Overpass API) |
+| Administrative Boundary | Pune City GeoJSON |
+
+---
+
+## Technology Stack  
+
+| Category | Tools / Libraries |
+|-----------|------------------|
+| Remote Sensing | Google Earth Engine, Rasterio |
+| Spatial Analysis | GeoPandas, RasterStats, Shapely |
+| Machine Learning | Scikit-learn (K-Means clustering) |
+| Data Handling | Pandas, NumPy |
+| Visualization | Matplotlib |
+| Automation | Python scripting pipeline |
+| Environment | Google Colab / Python |
+
+---
+
+## Pipeline Architecture  
+
+### **Phase 1 – Study Area & Feature Extraction**
+- Defined Pune city boundary using GeoJSON  
+- Extracted green spaces and water bodies using Overpass API  
+
+### **Phase 2 – Land Surface Temperature Processing**
+- Retrieved Landsat 9 LST data from Google Earth Engine  
+- Cleaned raster, masked invalid values, and clipped to city boundary  
+
+### **Phase 3 – Cooling Feature Zonal Statistics**
+- Computed mean LST for each green and water feature  
+- Enriched vector datasets with temperature metrics  
+
+### **Phase 4 – Urban Heat Island Classification**
+- Applied K-Means clustering on cleaned LST raster  
+- Classified the city into thermal zones (cool → extreme heat)  
+
+### **Phase 5 – Visualization & Export**
+- Generated heatmaps and spatial overlays  
+- Exported GeoTIFF and GeoJSON for GIS integration  
+
+---
+
+## Repository Structure  
 ```
 /Urban_Heat_Island_Detection
 ├── uhi.py                           # Main Python script
@@ -27,55 +84,53 @@ The entire workflow is implemented using open-source geospatial Python libraries
 ```
 ---
 
-## Tools & Libraries
-- **Google Earth Engine (GEE) Python API** (via Google Colab)
+## Key Outputs  
 
-- **Python Libraries**: `geemap`, `geopandas`, `rasterio`, `numpy`, `sklearn`, `rasterstats`, `matplotlib`
-
-- **Data Sources**:
-
-  - Landsat 9 Surface Temperature (LST)
-
-  - OpenStreetMap (OSM) features via Overpass API
+| File | Description |
+|------|-------------|
+| `kmeans_uhi_clusters.tif` | Classified UHI thermal zones raster |
+| `pune_cooling_with_LST.geojson` | Cooling features enriched with zonal mean temperature |
+| `masked_LST_cleaned.png` | Cleaned LST visualization |
+| `phase4_kmeans_clusters.png` | UHI clustering heatmap |
 
 ---
 
-## Workflow Breakdown
+## How to Run  
 
-- Phase 1: Study Area Setup
-Defined Pune city boundary using geojson file.
+```bash
+# Clone repository
+git clone https://github.com/prachisarode95/Urban-Heat-Island-Detection-Pipeline
+cd Urban-Heat-Island-Detection-Pipeline
 
-Fetched OSM features (green zones, water bodies) using overpass queries.
+# Install dependencies
+pip install -r requirements.txt
 
-- Phase 2: Land Surface Temperature (LST) Data Processing
-Downloaded Landsat 9 LST data via Google Earth Engine.
+# Run automation pipeline
+python scripts/uhi.py
 
-Preprocessed and cleaned raster data to remove invalid values and apply city boundary mask.
+```
 
-- Phase 3: Zonal Statistics
-Calculated mean LST values for each green and water body feature using rasterstats.zonal_stats().
+## Requirements.txt
 
-Merged statistics with vector features to assess their cooling efficiency.
+```txt
+geemap
+geopandas
+rasterio
+numpy
+pandas
+scikit-learn
+rasterstats
+matplotlib
+shapely
 
-- Phase 4: Urban Heat Island Classification
-Applied K-Means clustering on the cleaned LST raster to classify areas into temperature zones (cool to hot).
+```
+## Key Outcomes
 
-Exported results as a new raster GeoTIFF file for spatial analysis.
+| File | Description |
+|------|-------------|
+| `kmeans_uhi_clusters.tif` | Classified UHI thermal zones raster |
+| `pune_cooling_with_LST.geojson` | Cooling features enriched with zonal mean temperature |
+| `masked_LST_cleaned.png` | Cleaned LST visualization |
+| `phase4_kmeans_clusters.png` | UHI clustering heatmap | 
 
-- Phase 5: Visualization & Output
-Generated heatmap overlays and feature-enriched maps.
-
-Exported final GeoTIFF and GeoJSON files for GIS integration or further analysis.
-
----
-
-## Final Outputs
-
-| Output File                     | Description                                  |
-| ------------------------------ | -------------------------------------------- |
-| `pune_cooling_with_LST.geojson` | Cooling features enriched with zonal mean LST values |
-| `kmeans_uhi_clusters.tif`       | GeoTIFF raster of classified UHI zones for GIS and analysis |
-| `masked_LST_cleaned.png`       | Visual preview of cleaned LST raster |
-| `phase4_kmeans_clusters.png`   | Heatmap showing different UHI zones for Pune city |
-
----
+```
